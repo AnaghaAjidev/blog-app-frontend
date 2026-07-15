@@ -1,61 +1,69 @@
-import axios from "axios";
 import React, { useState } from "react";
+import axios from "axios";
 
 const CreatePost = () => {
 
     const [input, setInput] = useState({
-        Message: "",
-        userId: sessionStorage.getItem("userId")
+        Message: ""
     });
 
-    const inputHandler = (event) => {
+    const inputHandler = (e) => {
         setInput({
             ...input,
-            [event.target.name]: event.target.value
+            [e.target.name]: e.target.value
         });
     };
 
-    const readValues = () => {
+    const createPost = () => {
 
         let token = sessionStorage.getItem("token");
         let userId = sessionStorage.getItem("userId");
 
-        let data = {
-            ...input,
-            userId: userId
-        };
-
         axios.post(
             "http://localhost:3030/create",
-            data,
+            {
+                userId: userId,
+                Message: input.Message
+            },
             {
                 headers: {
-                    "token": sessionStorage.getItem("token"),
-                    "Content-Type":"application/json"
+                    token: token
                 }
             }
         )
         .then((response) => {
 
-            if (response.data.status=="Success") {
-                alert("Posted Successfully")
-                
-            } else {
-                alert("Something went wrong")
-            }
-           
+            console.log(response.data);
 
-            
+            if (response.data.status === "Success") {
+
+                alert("Post Created Successfully");
+
+                setInput({
+                    Message: ""
+                });
+
+            } else {
+
+                alert(response.data.status);
+
+            }
+
         })
         .catch((error) => {
+
             console.log(error);
+            alert("Something went wrong");
+
         });
+
     };
 
     return (
         <div className="container mt-5">
             <div className="row justify-content-center">
-                <div className="col col-12 col-sm-10 col-md-8 col-lg-6">
+
+                <div className="col-md-6">
 
                     <div className="card shadow">
 
@@ -66,7 +74,8 @@ const CreatePost = () => {
                         <div className="card-body">
 
                             <div className="mb-3">
-                                <label className="form-label">Post a Message</label>
+                                <label>Message</label>
+
                                 <textarea
                                     className="form-control"
                                     rows="5"
@@ -74,15 +83,18 @@ const CreatePost = () => {
                                     value={input.Message}
                                     onChange={inputHandler}
                                 ></textarea>
+
                             </div>
 
                             <div className="d-grid">
+
                                 <button
                                     className="btn btn-success"
-                                    onClick={readValues}
+                                    onClick={createPost}
                                 >
-                                  POST
+                                    CREATE POST
                                 </button>
+
                             </div>
 
                         </div>
@@ -90,6 +102,7 @@ const CreatePost = () => {
                     </div>
 
                 </div>
+
             </div>
         </div>
     );
