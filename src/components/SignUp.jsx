@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
 
@@ -20,46 +21,46 @@ const Signup = () => {
 
     const readValues = () => {
 
-        if (input.password==input.cnfpass) {
-            
-            let newInput={"name":input.name, phone:input.phone,email:input.email,password:input.password}
-            
-             axios.post("http://localhost:3030/signup", newInput)
-            .then((response) => {
-                console.log(response.data)
+        if (input.password == input.cnfpass) {
 
-                if (response.data.status === "success") {
-                    alert("Registered Successfully");
-                    setInput({
-                        name: "",
-                        phone: "",
-                        email: "",
-                        password: "",
-                        cnfpass: ""
+            let newInput = { "name": input.name, phone: input.phone, email: input.email, password: input.password }
 
-                    })
-                }
-                else {
-                    alert("Email ID already exist")
-                    setInput({
-                        name: "",
-                        phone: "",
-                        email: "",
-                        password: "",
-                        cnfpass: ""
-                    })
-                }
+            axios.post("http://localhost:3030/signUp", newInput)
+                .then((response) => {
+                    console.log(response.data)
 
-            })
-            .catch((error) => {
-                console.log(error);
-                alert("Something went wrong");
-            });
+                    if (response.data.status === "success") {
+                        alert("Registered Successfully");
+                        setInput({
+                            name: "",
+                            phone: "",
+                            email: "",
+                            password: "",
+                            cnfpass: ""
+
+                        })
+                    }
+                    else {
+                        alert("Email ID already exist")
+                        setInput({
+                            name: "",
+                            phone: "",
+                            email: "",
+                            password: "",
+                            cnfpass: ""
+                        })
+                    }
+
+                })
+                .catch((error) => {
+                    console.log(error);
+                    alert("Something went wrong");
+                });
 
         } else {
             alert("Password and Confirm Password doesn't match")
         }
-        
+
 
 
     };
@@ -120,7 +121,7 @@ const Signup = () => {
                                 />
                             </div>
 
-                             <div className="mb-3">
+                            <div className="mb-3">
                                 <label className="form-label">Confirm Password</label>
                                 <input
                                     type="password"
@@ -141,17 +142,15 @@ const Signup = () => {
                             </div>
 
                             <div className="d-grid p-3">
-                                <button
-                                    className="btn btn-primary"
-                                >
+                                <Link to="/" className="btn btn-primary">
                                     GO BACK TO LOGIN
-                                </button>
+                                </Link>
                             </div>
-
                         </div>
-                    </div>
 
+                    </div>
                 </div>
+
             </div>
         </div>
     );
