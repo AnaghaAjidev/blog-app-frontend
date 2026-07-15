@@ -1,44 +1,43 @@
-import axios from "axios";
 import React, { useState } from "react";
+import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
 const SignIn = () => {
 
-    const navigate=useNavigate()
+    const navigate = useNavigate();
 
     const [input, setInput] = useState({
         email: "",
         password: ""
     });
 
-    const inputHandler = (event) => {
+    const inputHandler = (e) => {
         setInput({
             ...input,
-            [event.target.name]: event.target.value
+            [e.target.name]: e.target.value
         });
     };
 
     const readValues = () => {
 
-        axios.post("http://localhost:3030/signIn", input)
+        axios.post("http://localhost:3030/signin", input)
             .then((response) => {
-                console.log(response.data)
-                if(response.data.status=="Incorrect Password")
-                {
-                    alert ("Incorrect Password")
-                } else if(response.data.status=="Invalid Email ID"){
-                    alert ("Invalid Email ID")
+
+                console.log(response.data);
+
+                if (response.data.status === "Success") {
+
+                    sessionStorage.setItem("token", response.data.token);
+                    sessionStorage.setItem("userId", response.data.userId);
+
+                    alert("Login Successful");
+
+                    navigate("/create");
+
                 } else {
-                    let token=response.data.token
-                    let userId=response.data.userId
 
-                    console.log(userId)
-                    console.log(token)
+                    alert(response.data.status);
 
-                    sessionStorage.setItem("userId",userId)
-                    sessionStorage.setItem("token",token)
-
-                    navigate("/create")
                 }
 
             })
@@ -54,18 +53,18 @@ const SignIn = () => {
     return (
         <div className="container mt-5">
             <div className="row justify-content-center">
-                <div className="col col-12 col-sm-10 col-md-8 col-lg-5">
+                <div className="col-md-5">
 
                     <div className="card shadow">
 
                         <div className="card-header bg-success text-white">
-                            <h3 className="text-center">User Sign In</h3>
+                            <h3 className="text-center">User Login</h3>
                         </div>
 
                         <div className="card-body">
 
                             <div className="mb-3">
-                                <label className="form-label">Email</label>
+                                <label>Email</label>
                                 <input
                                     type="email"
                                     className="form-control"
@@ -76,7 +75,7 @@ const SignIn = () => {
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label">Password</label>
+                                <label>Password</label>
                                 <input
                                     type="password"
                                     className="form-control"
@@ -95,17 +94,17 @@ const SignIn = () => {
                                 </button>
                             </div>
 
-                            <div className="d-grid p-3">
-                                <Link to="/signUp" className="btn btn-primary">
-                                    NEW USERS CLICK HERE
+                            <div className="text-center mt-3">
+                                <Link to="/signup">
+                                    New User? Register Here
                                 </Link>
                             </div>
+
                         </div>
 
                     </div>
 
                 </div>
-
             </div>
         </div>
     );

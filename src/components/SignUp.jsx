@@ -1,84 +1,76 @@
-import axios from "axios";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
-const Signup = () => {
+const SignUp = () => {
+
+    const navigate = useNavigate();
 
     const [input, setInput] = useState({
         name: "",
         phone: "",
         email: "",
-        password: "",
-        cnfpass: ""
+        password: ""
     });
 
-    const inputHandler = (event) => {
+    const inputHandler = (e) => {
         setInput({
             ...input,
-            [event.target.name]: event.target.value
+            [e.target.name]: e.target.value
         });
     };
 
     const readValues = () => {
 
-        if (input.password == input.cnfpass) {
+        axios.post("http://localhost:3030/signup", input)
+            .then((response) => {
 
-            let newInput = { "name": input.name, phone: input.phone, email: input.email, password: input.password }
+                console.log(response.data);
 
-            axios.post("http://localhost:3030/signUp", newInput)
-                .then((response) => {
-                    console.log(response.data)
+                if (response.data.status === "success") {
 
-                    if (response.data.status === "success") {
-                        alert("Registered Successfully");
-                        setInput({
-                            name: "",
-                            phone: "",
-                            email: "",
-                            password: "",
-                            cnfpass: ""
+                    alert("Registration Successful");
 
-                        })
-                    }
-                    else {
-                        alert("Email ID already exist")
-                        setInput({
-                            name: "",
-                            phone: "",
-                            email: "",
-                            password: "",
-                            cnfpass: ""
-                        })
-                    }
+                    setInput({
+                        name: "",
+                        phone: "",
+                        email: "",
+                        password: ""
+                    });
 
-                })
-                .catch((error) => {
-                    console.log(error);
-                    alert("Something went wrong");
-                });
+                    navigate("/");
 
-        } else {
-            alert("Password and Confirm Password doesn't match")
-        }
+                } else {
 
+                    alert(response.data.status);
 
+                }
+
+            })
+            .catch((error) => {
+
+                console.log(error);
+                alert("Something went wrong");
+
+            });
 
     };
 
     return (
         <div className="container mt-5">
             <div className="row justify-content-center">
-                <div className="col col-12 col-sm-10 col-md-8 col-lg-6">
+                <div className="col-md-6">
 
                     <div className="card shadow">
+
                         <div className="card-header bg-primary text-white">
-                            <h3 className="text-center">User Signup</h3>
+                            <h3 className="text-center">User Registration</h3>
                         </div>
 
                         <div className="card-body">
 
                             <div className="mb-3">
-                                <label className="form-label">Name</label>
+                                <label>Name</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -89,7 +81,7 @@ const Signup = () => {
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label">Phone</label>
+                                <label>Phone</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -100,7 +92,7 @@ const Signup = () => {
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label">Email</label>
+                                <label>Email</label>
                                 <input
                                     type="email"
                                     className="form-control"
@@ -111,7 +103,7 @@ const Signup = () => {
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label">Password</label>
+                                <label>Password</label>
                                 <input
                                     type="password"
                                     className="form-control"
@@ -121,39 +113,29 @@ const Signup = () => {
                                 />
                             </div>
 
-                            <div className="mb-3">
-                                <label className="form-label">Confirm Password</label>
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    name="cnfpass"
-                                    value={input.cnfpass}
-                                    onChange={inputHandler}
-                                />
-                            </div>
-
                             <div className="d-grid">
                                 <button
-                                    className="btn btn-success"
+                                    className="btn btn-primary"
                                     onClick={readValues}
                                 >
-                                    REGISTER
+                                    SIGN UP
                                 </button>
                             </div>
 
-                            <div className="d-grid p-3">
-                                <Link to="/" className="btn btn-primary">
-                                    GO BACK TO LOGIN
+                            <div className="text-center mt-3">
+                                <Link to="/">
+                                    Already have an account? Login
                                 </Link>
                             </div>
+
                         </div>
 
                     </div>
-                </div>
 
+                </div>
             </div>
         </div>
     );
 };
 
-export default Signup;
+export default SignUp;
