@@ -13,6 +13,8 @@ const ViewMyPost = () => {
 
         const token = sessionStorage.getItem("token");
         const userId = sessionStorage.getItem("userId");
+        console.log("Token:", token);
+        console.log("UserId:", userId);
 
         try {
 
